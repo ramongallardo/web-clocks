@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <!-- https://1stwebdesigner.com/9-free-open-source-flipping-clocks-using-css-javascript/ -->
+  <head>
+    <title>Roller Clock</title>
+  </head>
+  <style>
+    @import url("https://fonts.googleapis.com/css?family=Lato:300,400,700");
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      font: 300 70px/1 "Lato", sans-serif;
+      color: #777;
+      background: #eee;
+    }
+
+    .clock {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 350px;
+      margin-top: -45px;
+      margin-left: -175px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .clock span {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+    }
+
+    .clock span:nth-child(2),
+    .clock span:nth-child(4) {
+      border-right: 1px solid #aaa;
+    }
+
+    .clock span:before,
+    .clock span:after {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      backface-visibility: hidden;
+      transition: transform 0.75s;
+    }
+
+    .clock span:before {
+      content: attr(data-old);
+      z-index: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .clock .flip:before {
+      transform: translate3d(0, 102.5%, 0);
+    }
+
+    .clock span:after {
+      content: attr(data-now);
+      z-index: 2;
+      transform: translate3d(0, -102.5%, 0);
+    }
+
+    .clock .flip:after {
+      transform: translate3d(0, 0, 0);
+    }
+  </style>
+  <script>
+    var Clock = (function() {
+      var exports = function(element) {
+        this._element = element;
+        var html = "";
+        for (var i = 0; i < 6; i++) {
+          html += "<span>&nbsp;</span>";
+        }
+        this._element.innerHTML = html;
+        this._slots = this._element.getElementsByTagName("span");
+        this._tick();
+      };
+      exports.prototype = {
+        _tick: function() {
+          var time = new Date();
+          this._update(
+            this._pad(time.getHours()) +
+              this._pad(time.getMinutes()) +
+              this._pad(time.getSeconds())
+          );
+          var self = this;
+          setTimeout(function() {
+            self._tick();
+          }, 1000);
+        },
+        _pad: function(value) {
+          return ("0" + value).slice(-2);
+        },
+        _update: function(timeString) {
+          var i = 0,
+            l = this._slots.length,
+            value,
+            slot,
+            now;
+          for (; i < l; i++) {
+            value = timeString.charAt(i);
+            slot = this._slots[i];
+            now = slot.dataset.now;
+            if (!now) {
+              slot.dataset.now = value;
+              slot.dataset.old = value;
+              continue;
+            }
+            if (now !== value) {
+              this._flip(slot, value);
+            }
+          }
+        },
+        _flip: function(slot, value) {
+          slot.classList.remove("flip");
+          slot.dataset.old = slot.dataset.now;
+          slot.dataset.now = value;
+          slot.offsetLeft;
+          slot.classList.add("flip");
+        }
+      };
+      return exports;
+    })();
+    window.onload = function() {
+      var i = 0,
+        clocks = document.querySelectorAll(".clock"),
+        l = clocks.length;
+      for (; i < l; i++) {
+        new Clock(clocks[i]);
+      }
+    };
+  </script>
+
+  <body>
+    <div class="clock"></div>
+  </body>
+</html>
