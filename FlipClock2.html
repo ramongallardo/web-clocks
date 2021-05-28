@@ -5,78 +5,96 @@
     <title>Flip Clock</title>
   </head>
   <style>
-    @import url("https://fonts.googleapis.com/css?family=Lato:300,400,700");
+    /* @import url("https://fonts.googleapis.com/css?family=Oswald:300,400,700");
+    @import url("https://fonts.googleapis.com/css?family=Archivo+Narrow:300,400,700"); */
+    @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700");
     html {
-      width: 100%;
       height: 100%;
     }
     body {
+      min-height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       background: black;
-      font-family: 'Lato','Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-      overflow: hidden;
+      font-family: "Roboto Condensed", "Archivo Narrow", "Oswald",
+        "Arial Narrow", sans-serif;
     }
+
     .flip-clock {
       text-align: center;
       -webkit-perspective: 400px;
       perspective: 400px;
-      /* margin-top: 25px;  */
+      margin: 20px auto;
     }
     .flip-clock *,
     .flip-clock *:before,
     .flip-clock *:after {
       box-sizing: border-box;
     }
+
     .flip-clock__piece {
       display: inline-block;
-      margin: 0 15px;
+      margin: 0 5px;
     }
+
+    .flip-clock__slot {
+      font-size: 2vw;
+    }
+
+    /*  @halfHeight: 0.72em;
+    @borderRadius: 0.15em; */
+
     .card {
       display: block;
       position: relative;
-      padding-bottom: 1em;
-      font-size: 28vw;/*26vw*/
-      line-height: 1.75;/*1.75*/
+      padding-bottom: 0.85em; /* @halfHeight; */
+      font-size: 34vw;
+      line-height: 1.23;
     }
+
     .card__top,
     .card__bottom,
     .card__back::before,
     .card__back::after {
       display: block;
-      height: 1em;
-      color: #ddd;
-      background: #222;
-      padding: 0.1em 0.1em;
-      border-radius: 0.1em 0.1em 0 0;
+      height: 0.85em; /* @halfHeight; */
+      color: #ccc;
+      background: #2e2e2e;
+      padding: 0.25em 0.25em;
+      border-radius: 0.15em 0.15em 0 0;
       -webkit-transform-style: preserve-3d;
+      /* backface-visiblity: hidden; */
       transform-style: preserve-3d;
-      width: 1.5em;/*1.8em*/
+      width: 1.4em;
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
       font-weight: lighter;
     }
+
     .card__bottom {
-      color: #ddd;
+      color: #ccc;
       position: absolute;
       top: 50%;
       left: 0;
       border-top: solid 1px #000;
-      background: #222;
-      border-radius: 0 0 0.1em 0.1em;
+      background: #2e2e2e;
+      border-radius: 0 0 0.15em 0.15em;
       pointer-events: none;
       overflow: hidden;
     }
+
     .card__bottom::after {
       display: block;
-      margin-top: -1em;
+      margin-top: -0.85em;
     }
+
     .card__back::before,
     .card__bottom::after {
       content: attr(data-value);
     }
+
     .card__back {
       position: absolute;
       top: 0;
@@ -84,11 +102,13 @@
       left: 0%;
       pointer-events: none;
     }
+
     .card__back::before {
       position: relative;
       z-index: -1;
       overflow: hidden;
     }
+
     .flip .card__back::before {
       -webkit-animation: flipTop 0.3s cubic-bezier(0.37, 0.01, 0.94, 0.35);
       animation: flipTop 0.3s cubic-bezier(0.37, 0.01, 0.94, 0.35);
@@ -105,6 +125,7 @@
       -webkit-animation: flipBottom 0.6s cubic-bezier(0.15, 0.45, 0.28, 1);
       animation: flipBottom 0.6s cubic-bezier(0.15, 0.45, 0.28, 1);
     }
+
     @-webkit-keyframes flipTop {
       0% {
         -webkit-transform: rotateX(0deg);
@@ -182,13 +203,13 @@
 
       el.className = "flip-clock__piece";
       el.innerHTML =
-        '<div class="flip-clock__card card">' + 
-        ' <div class="card__top"></div>'+
-        ' <div class="card__bottom"></div>'+
-        ' <div class="card__back">'+
-        '   <div class="card__bottom"></div>'+
-        ' </div>'+
-        '</div>';
+        '<div class="flip-clock__card card">' +
+        ' <div class="card__top"></div>' +
+        ' <div class="card__bottom"></div>' +
+        ' <div class="card__back">' +
+        '   <div class="card__bottom"></div>' +
+        " </div>" +
+        "</div>";
 
       this.el = el;
 
@@ -197,13 +218,8 @@
         back = el.querySelector(".card__back"),
         backBottom = el.querySelector(".card__back .card__bottom");
 
-      this.update = function(val, key) {
+      this.update = function (val) {
         val = ("0" + val).slice(-2);
-        if (key === "Hours" && val === "00") {
-          val = "12";
-        } else if (key === "Hours" && val[0] === "0") {
-          val = val.slice(-1);
-        }
         if (val !== this.currentValue) {
           if (this.currentValue >= 0) {
             back.setAttribute("data-value", this.currentValue);
@@ -219,7 +235,7 @@
         }
       };
 
-      this.update(value, label);
+      this.update(value);
     }
 
     // Calculation adapted from https://www.sitepoint.com/build-javascript-countdown-timer-no-dependencies/
@@ -231,7 +247,7 @@
         Days: Math.floor(t / (1000 * 60 * 60 * 24)),
         Hours: Math.floor((t / (1000 * 60 * 60)) % 24),
         Minutes: Math.floor((t / 1000 / 60) % 60),
-        Seconds: Math.floor((t / 1000) % 60)
+        Seconds: Math.floor((t / 1000) % 60),
       };
     }
 
@@ -240,14 +256,14 @@
       return {
         Total: t,
         Hours: t.getHours() % 12,
-        Minutes: t.getMinutes()
-        // Seconds: t.getSeconds()
+        Minutes: t.getMinutes(),
+        // Seconds: t.getSeconds(),
       };
     }
 
     function Clock(countdown, callback) {
       countdown = countdown ? new Date(Date.parse(countdown)) : false;
-      callback = callback || function() {};
+      callback = callback || function () {};
 
       var updateFn = countdown ? getTimeRemaining : getTime;
 
@@ -280,26 +296,28 @@
         if (t.Total < 0) {
           cancelAnimationFrame(timeinterval);
           for (key in trackers) {
-            trackers[key].update(0, key);
+            trackers[key].update(0);
           }
           callback();
           return;
         }
 
         for (key in trackers) {
-          trackers[key].update(t[key], key);
+          trackers[key].update(t[key]);
         }
       }
 
       setTimeout(updateClock, 500);
     }
 
-    window.onload = function() {
-      // var deadline = new Date(Date.parse(new Date()) + 12 * 24 * 60 * 60 * 1000);
-      // var c = new Clock(deadline, function() {
-      //   alert("countdown complete");
-      // });
-      // document.body.appendChild(c.el);
+    window.onload = function () {
+      //   var deadline = new Date(
+      //     Date.parse(new Date()) + 12 * 24 * 60 * 60 * 1000
+      //   );
+      //   var c = new Clock(deadline, function () {
+      //     alert("countdown complete");
+      //   });
+      //   document.body.appendChild(c.el);
 
       var clock = new Clock();
       document.body.appendChild(clock.el);
