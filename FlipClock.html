@@ -16,7 +16,8 @@
       justify-content: center;
       align-items: center;
       background: black;
-      font-family: 'Lato','Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      font-family: "Lato", "Trebuchet MS", "Lucida Sans Unicode",
+        "Lucida Grande", "Lucida Sans", Arial, sans-serif;
       overflow: hidden;
     }
     .flip-clock {
@@ -38,8 +39,8 @@
       display: block;
       position: relative;
       padding-bottom: 1em;
-      font-size: 28vw;/*26vw*/
-      line-height: 1.75;/*1.75*/
+      font-size: 28vw; /*26vw*/
+      line-height: 1.75; /*1.75*/
     }
     .card__top,
     .card__bottom,
@@ -53,7 +54,7 @@
       border-radius: 0.1em 0.1em 0 0;
       -webkit-transform-style: preserve-3d;
       transform-style: preserve-3d;
-      width: 1.5em;/*1.8em*/
+      width: 1.5em; /*1.8em*/
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
       font-weight: lighter;
@@ -182,13 +183,13 @@
 
       el.className = "flip-clock__piece";
       el.innerHTML =
-        '<div class="flip-clock__card card">' + 
-        ' <div class="card__top"></div>'+
-        ' <div class="card__bottom"></div>'+
-        ' <div class="card__back">'+
-        '   <div class="card__bottom"></div>'+
-        ' </div>'+
-        '</div>';
+        '<div class="flip-clock__card card">' +
+        ' <div class="card__top"></div>' +
+        ' <div class="card__bottom"></div>' +
+        ' <div class="card__back">' +
+        '   <div class="card__bottom"></div>' +
+        " </div>" +
+        "</div>";
 
       this.el = el;
 
@@ -197,7 +198,7 @@
         back = el.querySelector(".card__back"),
         backBottom = el.querySelector(".card__back .card__bottom");
 
-      this.update = function(val, key) {
+      this.update = function (val, key) {
         val = ("0" + val).slice(-2);
         if (key === "Hours" && val === "00") {
           val = "12";
@@ -231,7 +232,7 @@
         Days: Math.floor(t / (1000 * 60 * 60 * 24)),
         Hours: Math.floor((t / (1000 * 60 * 60)) % 24),
         Minutes: Math.floor((t / 1000 / 60) % 60),
-        Seconds: Math.floor((t / 1000) % 60)
+        Seconds: Math.floor((t / 1000) % 60),
       };
     }
 
@@ -240,14 +241,14 @@
       return {
         Total: t,
         Hours: t.getHours() % 12,
-        Minutes: t.getMinutes()
+        Minutes: t.getMinutes(),
         // Seconds: t.getSeconds()
       };
     }
 
     function Clock(countdown, callback) {
       countdown = countdown ? new Date(Date.parse(countdown)) : false;
-      callback = callback || function() {};
+      callback = callback || function () {};
 
       var updateFn = countdown ? getTimeRemaining : getTime;
 
@@ -294,13 +295,7 @@
       setTimeout(updateClock, 500);
     }
 
-    window.onload = function() {
-      // var deadline = new Date(Date.parse(new Date()) + 12 * 24 * 60 * 60 * 1000);
-      // var c = new Clock(deadline, function() {
-      //   alert("countdown complete");
-      // });
-      // document.body.appendChild(c.el);
-
+    window.onload = function () {
       var clock = new Clock();
       document.body.appendChild(clock.el);
     };

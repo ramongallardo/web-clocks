@@ -13,8 +13,6 @@
       height: 100%;
     }
     body {
-      min-height: 100%;
-      display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -219,8 +217,13 @@
         back = el.querySelector(".card__back"),
         backBottom = el.querySelector(".card__back .card__bottom");
 
-      this.update = function (val) {
+      this.update = function (val, key) {
         val = ("0" + val).slice(-2);
+        if (key === "Hours" && val === "00") {
+          val = "12";
+        } else if (key === "Hours" && val[0] === "0") {
+          val = val.slice(-1);
+        }
         if (val !== this.currentValue) {
           if (this.currentValue >= 0) {
             back.setAttribute("data-value", this.currentValue);
@@ -236,7 +239,7 @@
         }
       };
 
-      this.update(value);
+      this.update(value, label);
     }
 
     // Calculation adapted from https://www.sitepoint.com/build-javascript-countdown-timer-no-dependencies/
@@ -258,7 +261,6 @@
         Total: t,
         Hours: t.getHours() % 12,
         Minutes: t.getMinutes(),
-        // Seconds: t.getSeconds(),
       };
     }
 
@@ -297,14 +299,14 @@
         if (t.Total < 0) {
           cancelAnimationFrame(timeinterval);
           for (key in trackers) {
-            trackers[key].update(0);
+            trackers[key].update(0, key);
           }
           callback();
           return;
         }
 
         for (key in trackers) {
-          trackers[key].update(t[key]);
+          trackers[key].update(t[key], key);
         }
       }
 
@@ -312,14 +314,6 @@
     }
 
     window.onload = function () {
-      //   var deadline = new Date(
-      //     Date.parse(new Date()) + 12 * 24 * 60 * 60 * 1000
-      //   );
-      //   var c = new Clock(deadline, function () {
-      //     alert("countdown complete");
-      //   });
-      //   document.body.appendChild(c.el);
-
       var clock = new Clock();
       document.body.appendChild(clock.el);
     };
